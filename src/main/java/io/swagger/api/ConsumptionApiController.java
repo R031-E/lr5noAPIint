@@ -36,75 +36,28 @@ public class ConsumptionApiController{
     @Autowired
     ConsumptionService consumptionService;
 
-
-    /*public ResponseEntity<Void> consumptionDateDelete(Principal user, @Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("date") LocalDate date) {
-        if (user == null) throw new ForbiddenException();
-        if (dataStore.containsKey(date)) {
-            dataStore.remove(date);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }*/
-
-    /*public ResponseEntity<Object> consumptionDatePut(Principal user, @Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("date") LocalDate date,@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Consumption body) {
-        if (user == null) throw new ForbiddenException();
-        LocalDate newDate = LocalDate.parse(body.getDate());
-        if (body.getColdWater() < 0 || body.getHotWater() < 0 || body.getDayEnergy() < 0 || body.getNightEnergy() < 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        if (!newDate.equals(date) && dataStore.containsKey(newDate)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        if (dataStore.containsKey(date)) {
-            dataStore.remove(date);
-            dataStore.put(newDate, body);
-            return new ResponseEntity<Object>(dataStore.get(newDate) ,HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }*/
-
     @ModelAttribute("note")
-    public Consumption newConsumption(){
+    public Consumption createNewConsumption() {
         return new Consumption();
     }
 
     @GetMapping(value = "/consumptionlist")
     public ModelAndView consumptionGet(Principal user) {
         if (user == null) throw new ForbiddenException();
-        //ArrayList<Consumption> allConsumptions = new ArrayList<>(dataStore.values());
-        //Iterable<Consumption> iterableConsumptions = allConsumptions;
-        //return new ResponseEntity<Iterable<Consumption>>(iterableConsumptions, HttpStatus.OK);
         ModelAndView mav = new ModelAndView();
         mav.addObject("consumptions", consumptionService.findAll());
-        mav.addObject("note", newConsumption());
+        mav.addObject("note", createNewConsumption());
         mav.setViewName("consumption");
         return mav;
     }
 
-    /*public ResponseEntity<Object> consumptionGetbyDate(Principal user, @Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("date") LocalDate date) {
-        if (user == null) throw new ForbiddenException();
-        if (dataStore.containsKey(date)) {
-            return new ResponseEntity<Object>(dataStore.get(date), HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }*/
-
     @PostMapping(value = "/consumption/new")
-    public ResponseEntity<?> consumptionPost(Principal user, @Validated @ModelAttribute Consumption consumptionobj, Model model, BindingResult bindingResult) {
+    public ResponseEntity<?> consumptionPost(Principal user, @ModelAttribute Consumption consumptionobj, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             System.out.println(bindingResult);
             return new ResponseEntity<>("redirect:/consumptionlist/",HttpStatus.EXPECTATION_FAILED);
         }
         if (user == null) throw new ForbiddenException();
-        /*model.addAttribute("date", consumptionobj.getDate());
-        model.addAttribute("coldWater", consumptionobj.getColdWater());
-        model.addAttribute("hotWater", consumptionobj.getHotWater());
-        model.addAttribute("dayEnergy", consumptionobj.getDayEnergy());
-        model.addAttribute("nightEnergy", consumptionobj.getNightEnergy());*/
         System.out.println(consumptionobj.getDate());
         System.out.println(consumptionobj.getColdWater());
         if (consumptionobj.getColdWater() < 0 || consumptionobj.getHotWater() < 0 || consumptionobj.getDayEnergy() < 0 || consumptionobj.getNightEnergy() < 0) {
@@ -114,7 +67,7 @@ public class ConsumptionApiController{
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
             consumptionService.addConsumption(consumptionobj.getDate(), consumptionobj.getColdWater(), consumptionobj.getHotWater(), consumptionobj.getDayEnergy(), consumptionobj.getNightEnergy());
-            return new ResponseEntity<String>("redirect:/consumptionlist/", HttpStatus.CREATED);
+            return new ResponseEntity<>("redirect:/consumptionlist/", HttpStatus.CREATED);
         }
     }
 }

@@ -145,19 +145,19 @@
     </div>
   <div class="form-group">
     <label for="inputColdWater" th:text="#{consumption.coldWater}">Расход холодной воды</label>
-    <input type="number" step="0.01" class="form-control" id="inputColdWater" name="inputColdWater" placeholder="40.0" th:field="*{coldWater}"></input>
+    <input type="number" th:field="*{coldWater}" step="0.01" class="form-control" id="inputColdWater" name="inputColdWater" placeholder="40.0"></input>
   </div>
   <div class="form-group">
     <label for="inputHotWater" th:text="#{consumption.hotWater}">Расход горячей воды</label>
-    <input type="number" step="0.01" class="form-control" id="inputHotWater" name="inputHotWater" placeholder="40.0" th:field="*{hotWater}"></input>
+    <input type="number" th:field="*{hotWater}" step="0.01" class="form-control" id="inputHotWater" name="inputHotWater" placeholder="40.0"></input>
   </div>
   <div class="form-group">
     <label for="inputDayEnergy" th:text="#{consumption.dayEnergy}">Расход энергии за день</label>
-    <input type="number" class="form-control" id="inputDayEnergy" name="inputDayEnergy" placeholder="200.0" th:field="*{dayEnergy}"></input>
+    <input type="number" th:field="*{dayEnergy}" class="form-control" id="inputDayEnergy" name="inputDayEnergy" placeholder="200.0"></input>
   </div>
   <div class="form-group">
     <label for="inputNightEnergy" th:text="#{consumption.nightEnergy}">Расход энергии за ночь</label>
-    <input type="number" step="0.01" class="form-control" id="inputNightEnergy" name="inputNightEnergy" placeholder="100.0" th:field="*{nightEnergy}"></input>
+    <input type="number" th:field="*{nightEnergy}" step="0.01" class="form-control" id="inputNightEnergy" name="inputNightEnergy" placeholder="100.0"></input>
   </div>
   <button type="submit" class="btn btn-default" th:text="#{consumption.addbtn}">Добавить</button>
   </form>
