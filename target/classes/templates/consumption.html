@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+
+  <meta charset="utf-8"></meta>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+  <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+
+  <meta name="_csrf" content="${_csrf.token}" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" content="${_csrf.parameterName}" th:content="${_csrf.parameterName}"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+  <title>Notes on energy & water consumption</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .table {
+      width: 90%;
+      max-width: 600px;
+      margin: auto;
+      border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+    }
+
+    .table th {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .table td {
+      background-color: #fff;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      width: 50%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .form-group label {
+      display: block;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    .btn {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: none;
+    }
+
+  .btn:hover {
+        background-color:#337ab7;
+  }
+  </style>
+
+</head>
+<body>
+
+<div sec:authorize="isAnonymous()" >
+  <h1><a href="/login" th:text="#{consumption.loginbtn}">Login</a></h1>
+</div>
+
+<div sec:authorize="isAuthenticated()">
+  <form name="logoutForm" th:action="@{/logout}" method="post">
+    <input type="submit"  class="btn btn-primary" th:value="#{consumption.logoutbtn}"/>
+  </form>
+</div>
+
+<h1 th:text="#{consumption.header}">Учет расходов воды и электроэнергии</h1>
+
+<div class="form-group">
+  <label for="search" th:text="#{consumption.search}">Search:</label>
+  <input type="text" class="form-control" id="search">
+</div>
+
+<div sec:authorize="isAuthenticated()">
+  <table id="consumptionTable" class="table table-hover">
+    <thead>
+    <tr>
+      <th th:text="#{consumption.date}"><h2>Дата</h2></th>
+      <th th:text="#{consumption.coldWater}"><h2>Холодная вода</h2></th>
+      <th th:text="#{consumption.hotWater}"><h2>Горячая вода</h2></th>
+      <th th:text="#{consumption.dayEnergy}"><h2>Энергия за день</h2></th>
+      <th th:text="#{consumption.nightEnergy}"><h2>Энергия за ночь</h2></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="consumption : ${consumptions}">
+      <td th:text="${consumption.date}">{{consumption.date}}</td>
+      <td th:text="${consumption.coldWater}">{{consumption.coldWater}}</td>
+      <td th:text="${consumption.hotWater}">{{consumption.hotWater}}</td>
+      <td th:text="${consumption.dayEnergy}">{{consumption.dayEnergy}}</td>
+      <td th:text="${consumption.nightEnergy}">{{consumption.nightEnergy}}</td>
+      <td><input type="button" th:value="#{consumption.deletebtn}"/></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+<div class="alert alert-danger" role="alert"></div>
+
+<div>
+  <form method="POST" th:action="@{/consumption/new/}" th:object="${note}">
+    <div class="form-group">
+      <label for="inputdate" th:text="#{consumption.date}">Дата</label>
+      <input type="date" th:field="*{date}" class="form-control" id="inputdate" name="inputdate"  placeholder="Дата"> </input>
+    </div>
+  <div class="form-group">
+    <label for="inputColdWater" th:text="#{consumption.coldWater}">Расход холодной воды</label>
+    <input type="number" step="0.01" class="form-control" id="inputColdWater" name="inputColdWater" placeholder="40.0" th:field="*{coldWater}"></input>
+  </div>
+  <div class="form-group">
+    <label for="inputHotWater" th:text="#{consumption.hotWater}">Расход горячей воды</label>
+    <input type="number" step="0.01" class="form-control" id="inputHotWater" name="inputHotWater" placeholder="40.0" th:field="*{hotWater}"></input>
+  </div>
+  <div class="form-group">
+    <label for="inputDayEnergy" th:text="#{consumption.dayEnergy}">Расход энергии за день</label>
+    <input type="number" class="form-control" id="inputDayEnergy" name="inputDayEnergy" placeholder="200.0" th:field="*{dayEnergy}"></input>
+  </div>
+  <div class="form-group">
+    <label for="inputNightEnergy" th:text="#{consumption.nightEnergy}">Расход энергии за ночь</label>
+    <input type="number" step="0.01" class="form-control" id="inputNightEnergy" name="inputNightEnergy" placeholder="100.0" th:field="*{nightEnergy}"></input>
+  </div>
+  <button type="submit" class="btn btn-default" th:text="#{consumption.addbtn}">Добавить</button>
+  </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+openapi: 3.0.3
+info:
+  title: Учет расходов воды и электроэнергии
+  version: 1.0.0
+tags:
+- name: Consumption
+  description: Операции с записями о расходе
+paths:
+  /consumption:
+    post:
+      tags:
+      - Consumption
+      summary: Добавить запись о расходе
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Consumption'
+      responses:
+        '201':
+          description: Запись успешно создана
+        '400':
+          description: Неверный запрос
+    get:
+      tags:
+      - Consumption
+      summary: Получить все записи о расходе
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Consumption'
+        '500':
+          description: Ошибка сервера
+  /consumption/{date}:
+    delete:
+      tags:
+      - Consumption
+      summary: Удалить запись о расходе
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '204':
+          description: Запись успешно удалена
+        '404':
+          description: Запись не найдена
+    patch:
+      tags:
+      - Consumption
+      summary: Редактировать запись о расходе
+      parameters:
+        - name: date
+          in: path
+          required: true
+          schema:
+            type: string
+            format: date
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Consumption'
+      responses:
+        '200':
+          description: Запись успешно обновлена
+        '400':
+          description: Неверный запрос
+        '404':
+          description: Запись не найдена
+
+components:
+  schemas:
+    Consumption:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-only
+          description: Дата расхода, также является уникальным идентификатором каждого объекта consumption.
+        coldWater:
+          type: number
+          format: float
+          description: Расход холодной воды.
+        hotWater:
+          type: number
+          format: float
+          description: Расход горячей воды.
+        dayEnergy:
+          type: number
+          format: float
+          description: Дневной расход энергии.
+        nightEnergy:
+          type: number
+          format: float
+          description: Ночной расход энергии.
+      required:
+        - date
+        - coldWater
+        - hotWater
+        - dayEnergy
+        - nightEnergy
+
