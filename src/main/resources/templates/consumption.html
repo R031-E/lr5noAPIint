@@ -92,7 +92,7 @@
 </head>
 <body>
 
-<div sec:authorize="isAnonymous()" >
+<!-- <div sec:authorize="isAnonymous()" >
   <h1><a href="/login" th:text="#{consumption.loginbtn}">Login</a></h1>
 </div>
 
@@ -100,6 +100,21 @@
   <form name="logoutForm" th:action="@{/logout}" method="post">
     <input type="submit"  class="btn btn-primary" th:value="#{consumption.logoutbtn}"/>
   </form>
+</div> -->
+
+<div th:replace="fragments/header :: header">
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Static header</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/">Home</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 
 <h1 th:text="#{consumption.header}">Учет расходов воды и электроэнергии</h1>
@@ -109,7 +124,7 @@
   <input type="text" class="form-control" id="search">
 </div>
 
-<div sec:authorize="isAuthenticated()">
+<div sec:authorize="isAuthenticated()" th:if="${not #lists.isEmpty(consumptions)}">
   <table id="consumptionTable" class="table table-hover">
     <thead>
     <tr>
@@ -127,7 +142,11 @@
       <td th:text="${consumption.hotWater}">{{consumption.hotWater}}</td>
       <td th:text="${consumption.dayEnergy}">{{consumption.dayEnergy}}</td>
       <td th:text="${consumption.nightEnergy}">{{consumption.nightEnergy}}</td>
-      <td><input type="button" th:value="#{consumption.deletebtn}" th:href="@{/consumption/delete/{date}(date=${consumption.date})}" th:method="delete"/></td>
+      <td><form action="#" th:action="@{'/consumption/delete/{date}'(date=${consumption.date})}" th:method="delete" >
+        <button type="submit" class="btn" th:text="#{consumption.deletebtn}">
+          Delete
+        </button>
+      </form></td>
     </tr>
     </tbody>
   </table>
@@ -135,10 +154,10 @@
 
 
 
-<div class="alert alert-danger" role="alert"></div>
+<!-- <div class="alert alert-danger" role="alert"></div> -->
 
 <div>
-  <form method="POST" th:action="@{/consumption/new/}" th:object="${consumption}">
+  <form method="POST" th:action="@{'/consumption/new'}" th:object="${consumption}">
     <div class="form-group">
       <label for="inputdate" th:text="#{consumption.date}">Дата</label>
       <input type="date" th:field="*{date}" class="form-control" id="inputdate" name="inputdate"  placeholder="Дата"> </input>
