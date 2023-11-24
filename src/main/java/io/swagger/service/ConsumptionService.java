@@ -1,60 +1,36 @@
 package io.swagger.service;
 
 import io.swagger.model.Consumption;
+import io.swagger.repository.ConsumptionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 
 @Service
 public class ConsumptionService {
 
-    HashMap<String, Consumption> dataStorage = new HashMap<>();
+    @Autowired
+    private ConsumptionRepository consumptionRepository;
 
-    public Consumption findById(String id){
-        return (dataStorage.containsKey(id)) ? dataStorage.get(id) : null;
+    public Consumption saveConsumption(Consumption consumption){
+       return consumptionRepository.save(consumption);
     }
 
-    public List<Consumption> findAll(){
-        List<Consumption> dataList = new ArrayList<>(dataStorage.values());
-        return dataList;
+    public List<Consumption> getConsumptions() {
+        return consumptionRepository.getAllConsumptions();
     }
 
-    public void addConsumption(String date, float coldWater, float hotWater, float dayEnergy, float nightEnergy){
-        if (dataStorage.containsKey(date)) return;
-        Consumption obj = new Consumption();
-        obj.setDate(date);
-        obj.setColdWater(coldWater);
-        obj.setHotWater(hotWater);
-        obj.setDayEnergy(dayEnergy);
-        obj.setNightEnergy(nightEnergy);
-        dataStorage.put(date, obj);
+    public Consumption getConsumptionById(String date) {
+        return consumptionRepository.findById(date);
     }
 
-    public boolean deleteConsumption(String id){
-        if (dataStorage.containsKey(id)){
-            dataStorage.remove(id);
-            return true;
-        }
-        else return false;
+    public String deleteConsumption(String date) {
+        consumptionRepository.delete(date);
+        return "product removed !! " + date;
     }
 
-    public boolean updateConsumption(String oldDate, String newDate, float coldWater, float hotWater, float dayEnergy, float nightEnergy){
-        if (dataStorage.containsKey(oldDate)) {
-            Consumption obj = new Consumption();
-            obj.setDate(newDate);
-            obj.setColdWater(coldWater);
-            obj.setHotWater(hotWater);
-            obj.setDayEnergy(dayEnergy);
-            obj.setNightEnergy(nightEnergy);
-            dataStorage.remove(oldDate);
-            dataStorage.put(newDate, obj);
-            return true;
-        }
-        else return false;
+    public Consumption updateProduct(Consumption consumption) {
+        return consumptionRepository.update(consumption);
     }
-
 }
