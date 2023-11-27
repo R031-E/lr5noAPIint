@@ -18,19 +18,18 @@ public class ConsumptionService {
     }
 
     public List<Consumption> getConsumptions() {
-        return consumptionRepository.getAllConsumptions();
+        return consumptionRepository.findAll();
     }
 
     public Consumption getConsumptionById(String date) {
-        return consumptionRepository.findById(date);
+        return consumptionRepository.findByDate(date);
     }
 
-    public String deleteConsumption(String date) {
-        consumptionRepository.delete(date);
-        return "product removed !! " + date;
+    public void deleteConsumption(String date) {
+        consumptionRepository.deleteByDate(date);
     }
 
-    public Consumption updateProduct(Consumption consumption) {
-        return consumptionRepository.update(consumption);
-    }
+    //public Consumption updateProduct(Consumption consumption) {
+      //  return consumptionRepository.(consumption);
+    //}
 }
