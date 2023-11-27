@@ -1,24 +1,48 @@
 package io.swagger.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.validation.annotation.Validated;
+import javax.persistence.*;
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 
 /**
  * Consumption
  */
-@Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-10-17T23:14:48.983476182Z[GMT]")
 
-
+@Entity
+@Table(name = "consumption")
 public class Consumption {
+
+  @Id
+  @Basic
+  @Column(name = "date")
+  @NotEmpty(message = "Date must not be empty.")
   private String date;
+
+  //@Size(value = 1, message = "Cold water must not be empty.")
+  @Basic
+  @Column(name = "cold_water")
+  @Min(value = 1, message = "Cold water must be over 0.")
   private float coldWater;
+
+  //@NotEmpty(message = "Hot water must be not empty.")
+  @Basic
+  @Column(name = "hot_water")
+  @Min(value = 1, message = "Hot water must be over 0.")
   private float hotWater;
+
+  //@NotEmpty(message = "Day energy must not be empty.")
+  @Basic
+  @Column(name = "day_energy")
+  @Min(value = 1, message = "Day energy must be over 0.")
   private float dayEnergy;
+
+  //@NotEmpty(message = "Night energy must not be empty.")
+  @Basic
+  @Column(name = "night_energy")
+  @Min(value = 1, message = "Night energy must be over 0.")
   private float nightEnergy;
 
   public void setDate(String date){

@@ -36,38 +36,50 @@ public class ConsumptionApiController{
     @Autowired
     ConsumptionService consumptionService;
 
-    @ModelAttribute("note")
-    public Consumption createNewConsumption() {
-        return new Consumption();
-    }
 
-    @GetMapping(value = "/consumptionlist")
-    public ModelAndView consumptionGet(Principal user) {
-        if (user == null) throw new ForbiddenException();
+    @RequestMapping(value="/", method = RequestMethod.GET)
+    public ModelAndView generateFormData() {
         ModelAndView mav = new ModelAndView();
-        mav.addObject("consumptions", consumptionService.findAll());
-        mav.addObject("note", createNewConsumption());
+        mav.addObject("consumptions", consumptionService.getConsumptions());
+        mav.addObject("consumption", new Consumption());
         mav.setViewName("consumption");
         return mav;
     }
 
-    @PostMapping(value = "/consumption/new")
-    public ResponseEntity<?> consumptionPost(Principal user, @ModelAttribute Consumption consumptionobj, BindingResult bindingResult) {
+    @RequestMapping(value = "/consumptionlist", method = RequestMethod.GET)
+    public ModelAndView consumptionGet(Principal user) {
+        if (user == null) throw new ForbiddenException();
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("consumptions", consumptionService.getConsumptions());
+        mav.addObject("consumption", new Consumption());
+        mav.setViewName("consumption");
+        return mav;
+    }
+
+    @RequestMapping(value = "/consumption/new", method = RequestMethod.POST)
+    public String consumptionPost(Principal user,@Valid @ModelAttribute("consumption") Consumption consumptionobj, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             System.out.println(bindingResult);
-            return new ResponseEntity<>("redirect:/consumptionlist/",HttpStatus.EXPECTATION_FAILED);
+            return "redirect:/";
         }
         if (user == null) throw new ForbiddenException();
         System.out.println(consumptionobj.getDate());
         System.out.println(consumptionobj.getColdWater());
         if (consumptionobj.getColdWater() < 0 || consumptionobj.getHotWater() < 0 || consumptionobj.getDayEnergy() < 0 || consumptionobj.getNightEnergy() < 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return "redirect:/";
         }
-        if (consumptionService.findById(consumptionobj.getDate()) != null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        if (consumptionService.getConsumptionById(consumptionobj.getDate()) != null) {
+            return "redirect:/";
         } else {
-            consumptionService.addConsumption(consumptionobj.getDate(), consumptionobj.getColdWater(), consumptionobj.getHotWater(), consumptionobj.getDayEnergy(), consumptionobj.getNightEnergy());
-            return new ResponseEntity<>("redirect:/consumptionlist/", HttpStatus.CREATED);
+            consumptionService.saveConsumption(consumptionobj);
+            return "redirect:/";
         }
+    }
+
+    @RequestMapping(value = "/consumption/delete/{date}", method = RequestMethod.DELETE)
+    public String deleteConsumption(Principal user, @PathVariable("date") String date){
+        if (user == null) throw new ForbiddenException();
+        consumptionService.deleteConsumption(date);
+        return "redirect:/";
     }
 }
