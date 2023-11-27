@@ -18,10 +18,23 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Consumption {
+  @NotEmpty(message = "Date must not be empty.")
   private String date;
+
+  //@Size(value = 1, message = "Cold water must not be empty.")
+  @Min(value = 1, message = "Cold water must be over 0.")
   private float coldWater;
+
+  //@NotEmpty(message = "Hot water must be not empty.")
+  @Min(value = 1, message = "Hot water must be over 0.")
   private float hotWater;
+
+  //@NotEmpty(message = "Day energy must not be empty.")
+  @Min(value = 1, message = "Day energy must be over 0.")
   private float dayEnergy;
+
+  //@NotEmpty(message = "Night energy must not be empty.")
+  @Min(value = 1, message = "Night energy must be over 0.")
   private float nightEnergy;
 
   public void setDate(String date){

@@ -57,7 +57,7 @@ public class ConsumptionApiController{
     }
 
     @RequestMapping(value = "/consumption/new", method = RequestMethod.POST)
-    public String consumptionPost(Principal user, @ModelAttribute("consumption") Consumption consumptionobj, BindingResult bindingResult) {
+    public String consumptionPost(Principal user,@Valid @ModelAttribute("consumption") Consumption consumptionobj, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             System.out.println(bindingResult);
             return "redirect:/";

@@ -1,26 +1,19 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
 
-    <meta charset="utf-8"></meta>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
-    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
-
-
-<!--<link rel="stylesheet" href="../../static/css/bootstrap.min.css" media="screen" th:href="@{/css/bootstrap.min.css}">
-<script src="http://code.jquery.com/jquery-latest.js"></script>
-<script src="../../static/js/bootstrap.min.js"></script>-->
+    <!--<link rel="stylesheet" href="../../static/css/bootstrap.min.css" media="screen" th:href="@{/css/bootstrap.min.css}">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="../../static/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>
-<head>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.js"></script>-->
 
 </head>
 <body>
-<div class="navbar navbar-inverse navbar-fixed-top" th:fragment="header">
+<!--<div class="navbar navbar-inverse navbar-fixed-top" th:fragment="header">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
@@ -28,11 +21,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" th:href="@{/}" th:text="#{header.project}">My project</a>
+            <a class="navbar-brand" href="/" th:text="#{header.project}">My project</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li th:classappend="${page == 'consumption' ? 'active' : ''}">
+                <li th:classappend="${page== 'consumption' ? 'active' : ''}">
                     <a href="#" th:href="@{/}" th:text="#{header.home}">Home</a>
                 </li>
             </ul>
@@ -53,6 +46,34 @@
             </ul>
         </div>
     </div>
-</div>
+</div>-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="header">
+    <a class="navbar-brand" href="/" th:text="#{header.project}">My project</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item" th:classappend="${page== 'consumption' ? 'active' : ''}">
+                <a class="nav-link" th:href="@{/}" th:text="#{header.home}"> Home <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li th:if="${#authorization.expression('!isAuthenticated()')}">
+
+                    <a href="/login" th:href="@{/login}">
+                        <button type="button" class="btn btn-primary" th:text="#{consumption.loginbtn}">
+                        </button>
+                    </a>
+
+            </li>
+            <li th:if="${#authorization.expression('isAuthenticated()')}">
+                <form name="logoutForm" th:action="@{/logout}" method="post">
+                    <input type="submit" class="btn btn-primary" th:value="#{consumption.logoutbtn}"/>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
 </body>
 </html>

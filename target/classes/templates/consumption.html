@@ -27,6 +27,7 @@
       background-color: #f4f4f4;
     }
 
+
     h1 {
       color: #333;
       text-align: center;
@@ -103,26 +104,40 @@
 </div> -->
 
 <div th:replace="fragments/header :: header">
-  <div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/">Static header</a>
-      </div>
-      <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="/">Home</a></li>
-        </ul>
-      </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar w/ text</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Features</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pricing</a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+      Navbar text with an inline element
+    </span>
     </div>
-  </div>
+  </nav>
 </div>
 
-<h1 th:text="#{consumption.header}">Учет расходов воды и электроэнергии</h1>
+<!--<h1 th:text="#{consumption.header}">Учет расходов воды и электроэнергии</h1>-->
 
-<div class="form-group">
+<br>
+<br>
+<br>
+
+<!--<div class="form-group">
   <label for="search" th:text="#{consumption.search}">Search:</label>
   <input type="text" class="form-control" id="search">
-</div>
+</div>-->
 
 <div sec:authorize="isAuthenticated()" th:if="${not #lists.isEmpty(consumptions)}">
   <table id="consumptionTable" class="table table-hover">
@@ -153,8 +168,11 @@
 </div>
 
 
-
-<!-- <div class="alert alert-danger" role="alert"></div> -->
+<div class="alert alert-danger" role="alert" th:if="${not #lists.isEmpty(#fields.allErrors())}">
+  <ul>
+    <li th:each="err : ${#fields.errors('consumption.*')}" th:text="${err}" />
+  </ul>
+</div>
 
 <div>
   <form method="POST" th:action="@{'/consumption/new'}" th:object="${consumption}">
