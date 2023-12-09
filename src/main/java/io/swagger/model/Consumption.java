@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
  */
 
 @Entity
-@Table(name = "consumption")
+@Table(name = "consumptions")
 public class Consumption {
 
   @Id

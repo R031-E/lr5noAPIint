@@ -1,40 +1,35 @@
 package io.swagger.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.model.Consumption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.threeten.bp.LocalDate;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import io.swagger.service.ConsumptionService;
 import javax.validation.Valid;
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
+import io.swagger.service.KafkaProducer;
+import io.swagger.service.KafkaConsumer;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2023-10-17T23:14:48.983476182Z[GMT]")
 @Controller
 public class ConsumptionApiController{
 
     private static final Logger log = LoggerFactory.getLogger(ConsumptionApiController.class);
-
-    // Добавьте хранилище данных в памяти
-    @Autowired
-    ConsumptionService consumptionService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ConsumptionService consumptionService;
+    private final KafkaProducer kafkaProducer;
+    @Autowired(required = false)
+    public ConsumptionApiController(ConsumptionService consumptionService, KafkaProducer kafkaProducer){
+        this.consumptionService = consumptionService;
+        this.kafkaProducer = kafkaProducer;
+    }
+    //@Autowired
+    //ConsumptionService consumptionService;
 
 
     @RequestMapping(value="/", method = RequestMethod.GET)
@@ -72,6 +67,10 @@ public class ConsumptionApiController{
             return "redirect:/";
         } else {
             consumptionService.saveConsumption(consumptionobj);
+            if (kafkaProducer != null) {
+                String message = convertConsumptionToMessage(consumptionobj);
+                kafkaProducer.sendMessage("myTopic", String.valueOf(consumptionobj.getDate()), message);
+            }
             return "redirect:/";
         }
     }
@@ -82,4 +81,14 @@ public class ConsumptionApiController{
         consumptionService.deleteConsumption(date);
         return "redirect:/";
     }
+
+    private String convertConsumptionToMessage(Consumption consumption){
+        try{
+            return objectMapper.writeValueAsString(consumption);
+        }
+        catch (Exception e){
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
 }
+
