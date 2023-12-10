@@ -54,6 +54,7 @@ services:
       - SPRING_DATASOURCE_DRIVERCLASSNAME=org.hibernate.dialect.PostgreSQLDialect
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=1234
+      - KAFKA_BOOTSTRAPADDRESS=kafka:9092
   consumer1:
     #image: lr5noapiint
     build:
