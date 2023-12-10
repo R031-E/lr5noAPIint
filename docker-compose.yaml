@@ -54,16 +54,16 @@ services:
       - SPRING_DATASOURCE_DRIVERCLASSNAME=org.hibernate.dialect.PostgreSQLDialect
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=1234
-      - KAFKA_BOOTSTRAPADDRESS=kafka:9092
+      - SPRING_KAFKA_PRODUCER_BOOTSTRAP-SERVERS=kafka:9092
   consumer1:
     #image: lr5noapiint
     build:
       context: ""
     environment:
       - SPRING_CONFIG_NAME=reader1
-      - KAFKA_BOOTSTRAPADDRESS=kafka:9092
+      - SPRING_KAFKA_CONSUMER_BOOTSTRAP-SERVERS=kafka:9092
       #- KAFKA_TOPIC=myTopic
-      - KAFKA_GROUPID=myGroup
+      - SPRING.KAFKA.CONSUMER.GROUP-ID=myGroup
       - SPRING_DATASOURCE.DRIVERCLASSNAME=org.postgresql.Driver
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/consumptions
       - SPRING_DATASOURCE_DRIVERCLASSNAME=org.hibernate.dialect.PostgreSQLDialect
