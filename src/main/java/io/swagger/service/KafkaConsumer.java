@@ -22,7 +22,6 @@ public class KafkaConsumer {
     @KafkaListener(topics = "myTopic")
     public void listen(String message) {
         System.out.println(message);
-        // Преобразование сообщения обратно в ItemObj и сохранение его в базе данных
         Consumption consumption = convertMessageToItemObj(message);
         repository.save(consumption);
     }
